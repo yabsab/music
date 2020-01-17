@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>test</title>
+<style>
+#list {width: 400px; border:1px solid black; border-collapse: collapse;}
+#list td, #list th { border: 1px solid black; text-align: center;}
+#list > thead > tr {color: yellow; background-color: purple;}
+</style>
+    <script src ="https://unpkg.com/vue/dist/vue.min.js"></script>
+  </head>
+  <body>
+    <div id = "exmaple">
+      <p>
+        국가명 : <input type='text' v-model='conturyname' placeholder="국가명"/>
+      </p>
+    <table id = "list"> 
+      <thead>
+        <tr>
+          <th>번호</th><th>국가명</th><th>수도</th><th>지역</th>
+        </tr>
+      </thead>
+
+      <tbody id = "contacts">
+        <!-- <tr v-for="contact in contacts" v-if="contact.address.indexOf('대구') >-1"> -->
+          <template v-for="contact in filtered">
+            <tr>
+        <td>{{contact.no}}</td>
+        <td>{{contact.name}}</td>
+        <td>{{contact.capital}}</td>
+        <td>{{contact.region}}</td>
+        </tr>
+       
+          
+      </template>
+      </tbody>
+    </table>
+  </div>
+
+
+
+<script>
+  var  model = 
+  {
+    conturyname :"",
+    "contacts" : 
+    [
+     {"no" : 100, 'name' : "미국", "capital":"워싱턴DC", "region" : "america"},
+     {"no" : 99, 'name' : "한국", "capital":"서울", "region" : "asia"},
+     {"no" : 98, 'name' : "영국", "capital":"런던", "region" : "europe"},
+     {"no" : 97, 'name' : "중국", "capital":"서울", "region" : "asia"}
+    ]
+  }
+
+ 
+  
+  var list = new Vue 
+  ({
+    el : '#exmaple',
+    data : model,
+    computed : 
+    {
+      filtered : function ()
+      {
+        var cname = this.conturyname.trim()
+        
+        return this.contacts.filter(function(item,index)
+        {
+
+          if (item.name.indexOf(cname) > -1)
+          {
+            return true
+          }
+
+        })
+
+      }
+
+    }
+  });
+
+  var regions = 
+  {
+
+    'a' : '서울',
+    'b' : 'amerai',
+    'c' : 'euprope'
+
+  }
+  var list = new Vue 
+  ({
+    el : '#test1',
+    data : {regions : regions}
+  });
+
+  var Vsum = new Vue 
+  ({
+    el : '#test2',
+    data : {num : 0},
+    computed : 
+    {
+
+      sum : function()
+      {
+        var n = Number(this.num)
+        if(Number.isNaN(n) || n< 1) return 0
+        return((1+n)*n)/2
+      }
+    }
+  });
+
+</script>
+</body>
+</html>
+  

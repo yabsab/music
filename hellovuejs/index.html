@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <script src ="https://unpkg.com/vue/dist/vue.min.js"></script>
+  <script src ="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"></script>
+  <script src ="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.js"></script>
+  <script src ="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.1.1/es6-promise.auto.min.js"></script>
+</head>
+<style>
+  #list {width: 600px; border: 1px solid black; border-collapse: collapse; }
+  #list td, #list th { border: 1px solid black; text-align: center;}
+  #list > thead > tr {color: yellow; background-color: purple;}
+</style>
+
+<body>
+   <div id="test">
+ 
+          <v-row>
+            <v-col
+              cols="11"
+              md="4"
+            >
+              <v-text-field
+                v-model="firstname"
+                :rules="nameRules"
+                :counter="10"
+                label="First name"
+                required
+              ></v-text-field>
+            </v-col>
+    
+            <v-col
+              cols="12"
+              md="4"
+            >
+              <v-text-field
+                v-model="lastname"
+                :rules="nameRules"
+                :counter="10"
+                label="Last name"
+                required
+              ></v-text-field>
+            </v-col>
+    
+            <v-col
+              cols="12"
+              md="4"
+            >
+              <v-text-field
+                v-model="email"
+                :rules="emailRules"
+                label="E-mail"
+                required
+              ></v-text-field>
+      
+ 
+ 
+            </v-col>
+          </v-row>
+    
+    
+
+            </div>
+      
+      <body>
+
+        <div id = "member"> 
+          <p>
+            이름 : <v-text-field type="text" v-model="name" placeholder="두자이상 입력"/>
+      
+            </p>
+
+
+            <!-- <table id ="list">
+
+              <thead>
+                <tr>
+                <th>사진</th>  <th>번호</th><th>이름</th> <th>전화번호</th><th>주소</th>
+      
+                </tr>
+      
+              </thead>
+              
+              <tbody id = "contacts">
+                  <tr v-for="contacts in cantactilst">
+                    <td><img v-bind:src ='contacts.photo'></td>
+                    <td>{{contacts.no}}</td>
+                    <td>{{contacts.name}}</td>
+                    <td>{{contacts.tel}}</td>
+                    <td>{{contacts.address}}</td>
+                  </tr>
+      
+              </tbody> 
+            </table>
+            <div v-show="isProcessing === true">조회중</div>
+         -->
+         <v-card v-for = "contacts in cantactilst"
+         class="mx-auto"
+         max-width="434"
+         tile
+       >
+         <v-img
+           height="100%"
+           src="https://cdn.vuetifyjs.com/images/cards/server-room.jpg"
+         >
+           <v-row
+             align="end"
+             class="fill-height"
+           >
+             <v-col
+               align-self="start"
+               class="pa-0"
+               cols="12"
+             >
+               <v-avatar
+                 class="profile"
+                 color="grey"
+                 size="164"
+                 tile
+               >
+               <img v-bind:src ='contacts.photo'>
+               </v-avatar>
+             </v-col>
+             <v-col class="py-0">
+               <v-list-item
+                 color="rgba(0, 0, 0, .4)"
+                 dark
+               >
+                 <v-list-item-content>
+                   <v-list-item-title class="title">{{contacts.name}}</v-list-item-title>
+                   <v-list-item-subtitle>{{contacts.address}}</v-list-item-subtitle>
+                 </v-list-item-content>
+               </v-list-item>
+             </v-col>
+           </v-row>
+         </v-img>
+       </v-card>
+
+
+      </body>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+
+  <script>
+
+var group = new Vue 
+({
+  el : '#member',
+
+  data :  
+    { 
+      name : '', 
+      isProcessing : false,   
+      cantactilst : []  
+    },
+    watch : 
+     {
+
+        name : function(val)
+        {
+          if(val.length >=2)
+          {
+            this.fetchContacts()
+          } else 
+          {
+            this.cantactilst =[]
+          }
+
+        }
+
+     },
+    methods :
+    {
+      fetchContacts : _.debounce(function(){
+
+        this.cantactilst = []
+        this.isProcessing =true
+        var url = "http://sample.bmaster.kro.kr/contacts_long/search/"+this.name
+        console.log(url)
+        var member = this
+        fetch(url).then(function(response){
+          return response.json()
+        }).then(function(json){
+          member.cantactilst = json
+          console.log(member.cantactilst)
+          member.isProcessing = true
+       }).catch(function(ex){
+        console.log('parsing failed',ex)
+        member.cantactilst =[]
+        member.isProcessing = false
+
+       })
+      },300)
+
+    }
+});
+
+var vm = new Vue 
+({
+
+  el: '#test',
+  vuetify: new Vuetify(),
+  data: () => ({
+    valid: false,
+    firstname: '',
+    lastname: '',
+    nameRules: [
+      v => !!v || 'Name is required',
+      v => v.length <= 10 || 'Name must be less than 10 characters',
+    ],
+    email: '',
+    emailRules: [
+      v => !!v || 'E-mail is required',
+      v => /.+@.+/.test(v) || 'E-mail must be valid',
+    ],
+  }),
+})
+  </script>
+</body>
+</html>
